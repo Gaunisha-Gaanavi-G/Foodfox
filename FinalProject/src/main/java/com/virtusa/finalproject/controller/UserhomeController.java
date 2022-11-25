@@ -42,6 +42,11 @@ public class UserhomeController {
 	@Autowired
 	private UserhomeService userhomeservice;
 	private ArrayList<String> productNames = new ArrayList<>();
+	private List<String> orderIds = new ArrayList<>();
+	private List<String> price = new ArrayList<>();
+	private List<String> quantity = new ArrayList<>();
+	private List<Integer> sno = new ArrayList<Integer>();
+	private ArrayList<String> productIds = new ArrayList<>();
 	@Autowired
 	private ProductDao productDao;
 
@@ -152,16 +157,14 @@ public class UserhomeController {
 	
 	@RequestMapping(value = { "/AddToCart" }, method = RequestMethod.POST)
 	public String insertItemstoCart(HttpServletRequest request, Model model,@RequestParam int productId,@RequestParam String email) {
-		ArrayList<String> productIds = new ArrayList<>();
 		
-		List<String> orderIds = new ArrayList<>();
-		List<String> price = new ArrayList<>();
-		List<String> quantity = new ArrayList<>();
-		List<Integer> sno = new ArrayList<Integer>();
+		
+		
 		int serialno=0;
 		//get user details using email
 		UserModel user_info=userhomeDao.get_info_email(email);
 		ProductModel product_info = productDao.getProductById(productId);
+		List<Order> finalOrder = new ArrayList<>();
 		
 		//get the table list from orders table
 		List<Order> order_list = orderDao.getOrdersByUserName(user_info.getUsername());
@@ -179,13 +182,16 @@ public class UserhomeController {
 			double total=0.0;
 			for(int i=0;i<order_list.size();i++) {
 				String productName =  order_list.get(i).getProduct().getProductName();
-				if((productNames.get(0)).equalsIgnoreCase(productName)) {
+				if(productNames.contains(productName)) {
 					System.out.println("Present_order----"+order_list.get(i));
-					int initialQuantity = order_list.get(0).getQuantity();
+					int prod_index = productNames.indexOf(productName);
+					int initialQuantity = order_list.get(prod_index).getQuantity();
 					initialQuantity+=1;
 					double amount = neworder.getAmount()*Double.valueOf(initialQuantity);
-//					price.set(prod_index, String.valueOf());
-					Order finalOrder = orderDao.updateOrder(productId, user_info.getId(), amount, initialQuantity);
+					price.set(prod_index, String.valueOf(amount));
+					quantity.set(prod_index, String.valueOf(initialQuantity));
+					finalOrder = orderDao.updateOrder(productId, user_info.getId(), amount, initialQuantity,email);
+					total+=amount;
 				}
 				else{
 					productIds.add(String.valueOf(order_list.get(i).getProduct().getProductId()));
@@ -196,6 +202,8 @@ public class UserhomeController {
 					sno.add(serialno++);
 					//add the new order to the orders table
 					neworder=orderDao.saveOrder(productId, 1, user_info.getUsername());
+					finalOrder.add(neworder);
+					total+=order_list.get(i).getAmount();
 				}
 			}
 			

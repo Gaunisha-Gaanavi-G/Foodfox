@@ -15,6 +15,6 @@ public interface OrderDao {
     
     public Order getOrderByProdID_UserId(int productId, int userId);
     
-    public Order updateOrder(int productId, int userId,double price, int quantity);
+    public List<Order> updateOrder(int productId, int userId,double price, int quantity,String email);
     
 }

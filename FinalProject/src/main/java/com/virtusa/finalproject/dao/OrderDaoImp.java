@@ -95,15 +95,16 @@ public class OrderDaoImp implements OrderDao {
 	}
 	
 	@Override
-	public Order updateOrder(int productId, int userId,double price, int quantity) {
+	public List<Order> updateOrder(int productId, int userId,double price, int quantity,String email) {
 		Session session = sessionFactory.getCurrentSession();
 		//update the price and quantity of all the rows having prod id and user id as given
 		String sql = "update foodfox2.orders set amount = "+price+",quantity = "+quantity+" where id="+userId+" and productId="+productId;
 		System.out.println(sql);
         Query query = session.createNativeQuery(sql);
         query.executeUpdate();
-		Order order = new Order();
-        return order;
+        UserModel user_info = userhomeDao.get_info_email(email);
+        List<Order> orders = getOrdersByUserName(user_info.getUsername());
+        return orders;
 	}
 
 }
