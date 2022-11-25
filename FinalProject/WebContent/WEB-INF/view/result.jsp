@@ -36,7 +36,7 @@ body {
             <form action = "products" method="post">
             <input type="submit" value="ADD PRODUCTS">
             </form></br>
-            <form action = "orders" method="post">
+            <form action = "/FinalProject/admin/viewOrders" method="get">
             <input type="submit" value="VIEW ORDERS">
             <br><br>
             <a href=" /FinalProject/admin/" class="button">Logout</a>

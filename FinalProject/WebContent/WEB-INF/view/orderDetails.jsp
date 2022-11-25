@@ -1,136 +1,107 @@
-<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
- <%@ page isELIgnored="false" %>
+<%@ page language="java" contentType="text/html; charset=ISO-8859-1"
+	pageEncoding="ISO-8859-1"%>
+	
+	<%@ taglib uri="http://java.sun.com/jsp/jstl/core" prefix="c"%>
+<%@ page isELIgnored="false"%>
+	
 <!DOCTYPE html>
 <html>
 <head>
-<meta charset="UTF-8">
-<title>Order Detail</title>
-<link rel="stylesheet" type="text/css"
-	  href="${pageContext.request.contextPath}/css/styles.css">
+<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
+<title>Orders Pagee</title>
 </head>
 <style>
-html {
-    background: white;
+.topnav {
+  background-color: #333;
+  overflow: hidden;
 }
-h3 {
-    margin: 0px;
-    padding: 0px;
+
+/* Style the links inside the navigation bar */
+.topnav a {
+  float: left;
+  color: #f2f2f2;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+  font-size: 17px;
 }
+
+/* Change the color of links on hover */
+.topnav a:hover {
+  background-color: #ddd;
+  color: black;
+}
+
+/* Create a right-aligned (split) link inside the navigation bar */
+.topnav a.split {
+  float: right;
+  background-color: #04AA6D;
+  color: white;
+}
+
 body {
-    max-width: 860px;
-    min-width: 360px;
-    margin: 0px auto;
-    background: #F8F8F8;
-    padding:0px 5px;
-    text-align:center;
-}
- 
-.page-title  {
-    font-size:120%;
-    text-align: left;
-    margin:10px 0px;
-}
-.header-container {
-    text-align: left;
-    border-bottom: 1px solid #ccc;
-    position: relative;
-    background: #5f5f5f;
-    color: white;
-}
-.header-container .header-bar  {
-    position: absolute;
-    right: 10px;
-    bottom: 20px;
-}
-.header-container .header-bar  a  {
-    color: white;
-    font-size: bold;
-}
- 
-.footer-container {
-    text-align: center;
-    margin-top: 10px;
-    padding: 5px 0px 0px 0px;
-    border-top: 1px solid #ccc;
-}
-.menu-container {
-    text-align: right;
-    margin: 10px 5px;
-}
-.menu-container a {
-    margin: 5px 5px 5px 10px;
-    color: #004d99;
-    font-weight: bold;
-    text-decoration: none;
-}
- 
-.site-name {
-    font-size:200%;
-    margin:10px 10px 10px 0px;
-    padding: 5px;
-}
- 
-.container  {
-    margin: 5px 0px;
-}
- 
-.demo-container, .login-container, .account-container {
-    padding: 5px;
-    border: 1px solid #ccc;
-    text-align:left;
-    margin:20px 0px;
-}
- 
-.customer-info-container {
-    text-align: left;
-    border: 1px solid #ccc;
-    padding: 0px 5px;
-}
-.product-preview-container {
-    border: 1px solid #ccc;
-    padding: 5px;
-    width: 250px;
-    margin: 10px ;
-    display: inline-block;
-    text-align:left;
-}
- 
-.product-preview-container input {
-    width: 50px;
-}
- 
-ul {
-    list-style-type: none;
-    padding-left: 5px;
-    margin:5px;
-}
- 
- 
-.navi-item {
-    margin: 5px 5px 5px 20px;
+  background-image: url("https://images.unsplash.com/photo-1490818387583-1baba5e638af?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxzZWFyY2h8MTB8fHNpbXBsZSUyMGZvb2QlMjBiYWNrZ3JvdW5kfGVufDB8fDB8fA%3D%3D&auto=format&fit=crop&w=500&q=60");
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  background-size: cover;
 }
 
+table{
+background-color:"yellow";
+font-size:18px;
+}
 
-.error-message {
-    font-size: 90%;
-    color: red;
-    font-style: italic;
+.total{
+background-color:#145DA0;
+font-size:20px;
+color:white;
+width:400px;
+margin:10px 550px;
+display:flex;
+justify-content:space-between;
+padding:10px;
 }
-table td {
-    padding: 5px;
-}
+
 </style>
 <body>
-   <h1>Order Details</h1>
-   <div class="container">
-       <h3>Thank you for Order</h3>
-       Your order number is: ${order.orderNum} <br>
-       Name : ${order.product.name}<br>
-       Price : ${order.product.price}<br>
-       Quantity : ${order.quantity}<br>
-       Total Amount : ${order.amount}<br> 
-   </div>
-   <a href="/FinalProject/admin/"> Logout </a>
- 
+	<h1 align="center">FOOD FOX</h1>
+	<div class="topnav">
+  <a class="active" href="#home">Home</a>
+
+  <a href="#contact">My Orders</a>
+  <a href="/FinalProject/login" class="split">Logout</a>
+</div>
+	<br/>
+	<form action="/FinalProject/Checkout" method = "POST">
+	<div>
+	
+	<table bgcolor="yellow" align="center" cellspacing="10px" cellpadding="10px">
+	<tr>
+		<th>PRODUCT ID</th>
+		<th>ORDER ID </th>
+		<th>PRICE</th>
+		<th>QUANTITY</th>
+	</tr>
+
+	<c:forEach items="${list_orders}" var="list" >
+					
+					<tr>
+						<form action="#" method="POST">
+						<td>${list.productId}</td>
+							<td>${list.o_id}</td>
+							<td>${list.amount}</td>
+							<td>${list.quantity} </td>
+						</form>
+					</tr>
+	</c:forEach>
+	
+		
+	</table> 
+	</div>
+	<br>
+	<div class="total"> <span>Total:</span><span>${total }</span>
+		<button type = "submit">Checkout</button>
+	 </div>
+	 </form>
 </body>
 </html>

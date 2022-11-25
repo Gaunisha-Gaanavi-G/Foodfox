@@ -106,5 +106,14 @@ public class OrderDaoImp implements OrderDao {
         List<Order> orders = getOrdersByUserName(user_info.getUsername());
         return orders;
 	}
+	
+	@Override
+	public List<Order> getAllOrders(){
+		Session session = sessionFactory.getCurrentSession();
+		String sql = "select * from foodfox2.orders";
+		Query query = session.createNativeQuery(sql);
+		List<Order> orders = query.getResultList();
+		return orders;
+	}
 
 }

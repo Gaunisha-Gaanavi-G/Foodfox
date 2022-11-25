@@ -17,4 +17,6 @@ public interface OrderDao {
     
     public List<Order> updateOrder(int productId, int userId,double price, int quantity,String email);
     
+    public List<Order> getAllOrders();
+    
 }

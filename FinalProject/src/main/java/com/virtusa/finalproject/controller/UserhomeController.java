@@ -47,6 +47,8 @@ public class UserhomeController {
 	private List<String> quantity = new ArrayList<>();
 	private List<Integer> sno = new ArrayList<Integer>();
 	private ArrayList<String> productIds = new ArrayList<>();
+	private double total=0.0;
+	private int serialno=0;
 	@Autowired
 	private ProductDao productDao;
 
@@ -158,9 +160,6 @@ public class UserhomeController {
 	@RequestMapping(value = { "/AddToCart" }, method = RequestMethod.POST)
 	public String insertItemstoCart(HttpServletRequest request, Model model,@RequestParam int productId,@RequestParam String email) {
 		
-		
-		
-		int serialno=0;
 		//get user details using email
 		UserModel user_info=userhomeDao.get_info_email(email);
 		ProductModel product_info = productDao.getProductById(productId);
@@ -176,39 +175,39 @@ public class UserhomeController {
 			quantity.add("1");
 			sno.add(serialno++);
 			//add the new order to the orders table
+			total+=product_info.getPrice();
 			neworder=orderDao.saveOrder(productId, 1, user_info.getUsername());
 		}
 		else {
-			double total=0.0;
+			
 			for(int i=0;i<order_list.size();i++) {
-				String productName =  order_list.get(i).getProduct().getProductName();
+				String productName =  product_info.getProductName();
 				if(productNames.contains(productName)) {
 					System.out.println("Present_order----"+order_list.get(i));
 					int prod_index = productNames.indexOf(productName);
 					int initialQuantity = order_list.get(prod_index).getQuantity();
 					initialQuantity+=1;
-					double amount = neworder.getAmount()*Double.valueOf(initialQuantity);
+					double amount = order_list.get(i).getAmount()*Double.valueOf(initialQuantity);
 					price.set(prod_index, String.valueOf(amount));
 					quantity.set(prod_index, String.valueOf(initialQuantity));
 					finalOrder = orderDao.updateOrder(productId, user_info.getId(), amount, initialQuantity,email);
-					total+=amount;
+					total+=order_list.get(i).getAmount();
 				}
 				else{
-					productIds.add(String.valueOf(order_list.get(i).getProduct().getProductId()));
-					productNames.add(productName);
-					orderIds.add(String.valueOf(order_list.get(i).getO_id()));
-					price.add(String.valueOf(order_list.get(i).getAmount()));
-					quantity.add(String.valueOf(order_list.get(i).getQuantity()));
-					sno.add(serialno++);
 					//add the new order to the orders table
+					System.out.println("Inserting new order for "+productId);
 					neworder=orderDao.saveOrder(productId, 1, user_info.getUsername());
-					finalOrder.add(neworder);
-					total+=order_list.get(i).getAmount();
+					productIds.add(String.valueOf(productId));
+					productNames.add(productName);
+					orderIds.add(String.valueOf(serialno));
+					price.add(String.valueOf(neworder.getAmount()));
+					quantity.add(String.valueOf(neworder.getQuantity()));
+					sno.add(serialno++);
+					total+=neworder.getAmount();
 				}
 			}
 			
 		}
-		System.out.println("ProductName in beigining-----"+productNames.get(0));
 //		for(int i=0;i<price.size();i++) {
 //			total+=Double.parseDouble(price.get(i));
 //		}
@@ -218,13 +217,13 @@ public class UserhomeController {
 		model.addAttribute("price",price.toArray());
 		model.addAttribute("quantity",quantity.toArray());
 		model.addAttribute("serial_no",sno);
-//		model.addAttribute("total",total);
+		model.addAttribute("total",total);
 		return "cart";
 	}
 	
-//	@RequestMapping(value = { "/Checkout" }, method = RequestMethod.POST)
-//	public void checkout(HttpServletRequest request, Model model) {
-//		
-//	}
+	@RequestMapping(value = { "/Checkout" }, method = RequestMethod.POST)
+	public String checkout(HttpServletRequest request, Model model) {
+		return "product";
+	}
 
 }

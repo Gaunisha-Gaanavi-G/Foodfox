@@ -1,5 +1,7 @@
 package com.virtusa.finalproject.controller;
 
+import java.util.List;
+
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,11 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import com.virtusa.finalproject.dao.OrderDao;
 import com.virtusa.finalproject.entity.Admin;
+import com.virtusa.finalproject.entity.Order;
 import com.virtusa.finalproject.entity.ProductModel;
 import com.virtusa.finalproject.service.AdminService;
 import com.virtusa.finalproject.service.AdminServiceImp;
 import com.virtusa.finalproject.service.ProductService;
+
 
 @Controller
 @RequestMapping("/admin")
@@ -27,6 +32,9 @@ public class AdminController {
 	
 	@Autowired
 	private ProductService productService;
+	
+	@Autowired
+	private OrderDao orderDao;
 	
 	@RequestMapping(value ="/" ,method=RequestMethod.GET)
 	public String homePage(){
@@ -82,8 +90,11 @@ public class AdminController {
     }
 	 
 	 
-    @RequestMapping(path = "/orders", method = {RequestMethod.POST,RequestMethod.GET})
-	public String OrdersList() {
+    @RequestMapping(path = "/viewOrders", method = {RequestMethod.POST,RequestMethod.GET})
+	public String OrdersList(Model model) {
+    	List<Order> list_orders = orderDao.getAllOrders();
+    	model.addAttribute("list_orders",list_orders);
+    	System.out.println(String.valueOf(list_orders.get(0)));
 		return "orderDetails";
 	}
 	
